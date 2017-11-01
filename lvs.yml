@@ -1,0 +1,15 @@
+---
+- hosts: lvs
+  vars:
+    vip: 1.1.1.8
+    virtual_router_id: 50
+    virtualservers:
+     - 80
+     - 443
+    realservers:
+     - 1.1.1.01
+     - 1.1.1.02
+
+
+  roles:
+    - ansible-keepalived

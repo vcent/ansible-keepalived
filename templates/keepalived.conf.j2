@@ -1,0 +1,51 @@
+! Configuration File for keepalived
+
+global_defs {
+{% if lvs_state == "master" %}
+   router_id LVS_MASTER
+{% else %}
+   router_id LVS_BACKUP
+{% endif %}
+}
+
+vrrp_instance VI_1 {
+{% if lvs_state == "master" %}
+    state MASTER
+{% else %}
+    state BACKUP
+{% endif %}
+    interface eth0
+    virtual_router_id {{ virtual_router_id }}
+    priority {{ priority }}
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1122
+    }
+    virtual_ipaddress {
+        {{ vip }}
+    }
+}
+
+{% for port in virtualservers %}
+
+virtual_server {{ vip }} {{ port }} {
+    delay_loop 3
+    lb_algo rr
+    lb_kind DR
+    protocol TCP
+
+{% for server in realservers %}
+    real_server {{ server }} {{ port }} {
+        weight 1
+    	TCP_CHECK { 
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port {{ port }}
+            }
+    }
+{% endfor %}
+}
+
+{% endfor %}

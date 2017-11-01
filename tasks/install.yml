@@ -1,0 +1,5 @@
+- name: Install ipvsadm & keepalived
+  yum: name={{ item }} update_cache=yes
+  with_items:
+   - keepalived
+   - ipvsadm

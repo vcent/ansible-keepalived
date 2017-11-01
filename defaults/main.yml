@@ -1,0 +1,6 @@
+
+tem_file: keepalived.conf.j2
+
+#file_name: /etc/keepalived/keepalived.conf
+file_name: /tmp/keepalived.conf
+
